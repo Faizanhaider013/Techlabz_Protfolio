@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  TECH LABZ DESIGN SYSTEM                                            */
+/*  Brand: Cyan #33C6FF → Purple #B13EFF, lime-green circuit accent    */
+/*  on deep navy #071321. Premium, spacious, enterprise-grade.         */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* Brand palette */
+  --color-brand-cyan: #33c6ff;
+  --color-brand-purple: #b13eff;
+  --color-brand-green: #56e0a0; /* circuit accent from logo, used sparingly */
+  --color-night: #071321;
+  --color-night-800: #0a1a2e;
+  --color-night-700: #10243c;
+  --color-night-600: #16324f;
+
+  /* Neutral text on dark */
+  --color-foreground: #eaf2fb;
+  --color-muted: #93a7bd;
+  --color-muted-dark: #5f7488;
+
+  /* Fonts (wired to next/font variables in layout.tsx) */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui;
+
+  /* ---- Premium fluid type scale (min → fluid → max) ---------------- */
+  /* Hero: ~44px mobile → 96px desktop */
+  --text-hero: clamp(2.75rem, 1.1rem + 7vw, 6rem);
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.03em;
+  /* Display / big statements */
+  --text-display: clamp(2.5rem, 1.2rem + 5vw, 4.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
+  /* Section headings: ~34px → 60px */
+  --text-h2: clamp(2.125rem, 1.2rem + 3.4vw, 3.75rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.022em;
+  /* Sub-section: ~26px → 36px */
+  --text-h3: clamp(1.625rem, 1.2rem + 1.6vw, 2.25rem);
+  --text-h3--line-height: 1.12;
+  --text-h3--letter-spacing: -0.018em;
+  /* Card titles: ~22px → 30px */
+  --text-card: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+  --text-card--line-height: 1.2;
+  --text-card--letter-spacing: -0.015em;
+  /* Body large: 18 → 21px */
+  --text-body-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --text-body-lg--line-height: 1.65;
+  /* Body: 17 → 18px */
+  --text-body: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);
+  --text-body--line-height: 1.7;
+  /* Eyebrow / small caps */
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.24em;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* Shadows / glows */
+  --shadow-glow-cyan: 0 0 48px -8px rgba(51, 198, 255, 0.5);
+  --shadow-glow-purple: 0 0 48px -8px rgba(177, 62, 255, 0.5);
+  --shadow-card: 0 24px 70px -24px rgba(0, 0, 0, 0.7);
+  --shadow-card-hover: 0 32px 90px -20px rgba(51, 198, 255, 0.28);
+
+  /* Animations */
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 11s ease-in-out infinite;
+  --animate-pulse-slow: pulse 5s ease-in-out infinite;
+  --animate-spin-slow: spin 26s linear infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-aurora: aurora 18s ease-in-out infinite;
+  --animate-gradient-x: gradient-x 6s ease infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @keyframes aurora {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    33% { transform: translate(6%, -4%) scale(1.12); opacity: 0.7; }
+    66% { transform: translate(-5%, 5%) scale(0.95); opacity: 0.45; }
+  }
+  @keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-night);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(51, 198, 255, 0.32);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--color-night); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #33c6ff, #b13eff);
+  border-radius: 8px;
+  border: 2px solid var(--color-night);
+}
+
+/* Lenis smooth-scroll recommendations */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ------------------------------------------------------------------ */
+/*  Utilities                                                          */
+/* ------------------------------------------------------------------ */
+
+@utility text-gradient {
+  background: linear-gradient(96deg, #46d3ff 0%, #7d82ff 48%, #c05bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Animated flowing gradient text */
+@utility text-gradient-animated {
+  background: linear-gradient(96deg, #33c6ff, #b13eff, #56e0a0, #33c6ff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-x 8s ease infinite;
+}
+
+@utility bg-gradient-brand {
+  background: linear-gradient(96deg, #33c6ff 0%, #b13eff 100%);
+}
+
+@utility bg-gradient-brand-animated {
+  background: linear-gradient(96deg, #33c6ff, #7d82ff, #b13eff, #33c6ff);
+  background-size: 300% 100%;
+  animation: gradient-x 6s ease infinite;
+}
+
+/* Frosted glass card */
+@utility glass {
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Deeper glass for elevated panels */
+@utility glass-strong {
+  background: rgba(13, 27, 45, 0.62);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 1px gradient border ring (masked) with a faint brand-tinted interior */
+@utility gradient-border {
+  position: relative;
+  background:
+    linear-gradient(140deg, rgba(51, 198, 255, 0.07), transparent 45%, rgba(177, 62, 255, 0.07)),
+    rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      140deg,
+      rgba(51, 198, 255, 0.6),
+      rgba(255, 255, 255, 0.08) 42%,
+      rgba(177, 62, 255, 0.6)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* Radial glow blobs used behind sections */
+@utility glow-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(130px);
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Subtle grid backdrop */
+@utility bg-grid {
+  background-image:
+    linear-gradient(rgba(51, 198, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(51, 198, 255, 0.055) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%);
+}
+
+/* Fine dotted backdrop */
+@utility bg-dots {
+  background-image: radial-gradient(rgba(51, 198, 255, 0.15) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* Section rhythm — generous, premium spacing */
+@utility section-pad {
+  padding-block: clamp(5rem, 3rem + 8vw, 9rem);
+}
+
+/* Standard content container */
+@utility container-x {
+  padding-inline: 1.5rem;
+  @media (min-width: 1024px) { padding-inline: 2rem; }
+}
+
+/* Reduce motion: kill decorative animation */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
