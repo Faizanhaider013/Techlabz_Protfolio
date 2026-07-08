@@ -1,81 +1,161 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
-import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ChevronDown, Sparkles, Cpu, Cloud, ShieldCheck, Rocket, Users, Clock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/ui/magnetic";
+import { heroWords, stats } from "@/lib/site";
+import { Counter } from "@/components/ui/counter";
 
-// Three.js canvas is client-only and below-the-fold-priority; skip SSR.
+// Three.js canvas is client-only; skip SSR and lazy-load below the hero content.
 const HeroScene = dynamic(() => import("@/components/three/hero-scene"), {
   ssr: false,
   loading: () => null,
 });
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i: number) => ({
+const WORD_INTERVAL = 3500; // each rotating word stays ~3.5s
+
+const container = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.14, delayChildren: 1.15 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 34, filter: "blur(8px)" },
+  visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay: 1.2 + i * 0.15, ease: [0.16, 1, 0.3, 1] as const },
-  }),
+    filter: "blur(0px)",
+    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const },
+  },
 };
 
+/** Floating glass feature cards that parallax with the mouse. */
+const floatingCards = [
+  { icon: Cpu, title: "AI Solutions", tags: ["Enterprise AI", "LLMs", "Automation"], pos: "left-[2%] top-[22%]", depth: 28, delay: 1.6 },
+  { icon: Cloud, title: "Cloud", tags: ["AWS", "Azure", "GCP"], pos: "right-[3%] top-[18%]", depth: -32, delay: 1.8 },
+  { icon: ShieldCheck, title: "ServiceNow", tags: ["ITSM", "ITOM", "HRSD"], pos: "right-[6%] bottom-[14%]", depth: -22, delay: 2.0 },
+];
+
+const statIcons = [Rocket, Users, Clock, Star];
+
 export function Hero() {
+  const [wordIndex, setWordIndex] = useState(0);
+  const reduce = useReducedMotion();
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  // Rotate the highlighted word slowly.
+  useEffect(() => {
+    const id = setInterval(() => setWordIndex((i) => (i + 1) % heroWords.length), WORD_INTERVAL);
+    return () => clearInterval(id);
+  }, []);
+
+  // Track normalized mouse position (-0.5..0.5) for parallax.
+  useEffect(() => {
+    if (reduce) return;
+    const onMove = (e: MouseEvent) => {
+      setMouse({ x: e.clientX / window.innerWidth - 0.5, y: e.clientY / window.innerHeight - 0.5 });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [reduce]);
+
   return (
-    <section className="relative flex min-h-svh items-center overflow-hidden" aria-label="Hero">
-      {/* Layered background: grid + glows + 3D scene */}
+    <section className="relative flex min-h-svh items-center overflow-hidden pb-24 pt-40 md:pt-44" aria-label="Hero">
+      {/* Layered animated background */}
       <div className="absolute inset-0 bg-grid" aria-hidden />
-      <div className="glow-blob left-[-10%] top-[10%] h-[30rem] w-[30rem] bg-brand-cyan/50" aria-hidden />
-      <div className="glow-blob bottom-[-10%] right-[-5%] h-[34rem] w-[34rem] bg-brand-purple/50" aria-hidden />
-      <div className="absolute inset-0 opacity-70 md:opacity-100">
+      <div className="glow-blob left-[-12%] top-[6%] h-[34rem] w-[34rem] animate-aurora bg-brand-cyan/45" aria-hidden />
+      <div className="glow-blob bottom-[-14%] right-[-8%] h-[40rem] w-[40rem] animate-aurora bg-brand-purple/45 [animation-delay:-6s]" aria-hidden />
+      <div className="glow-blob left-[38%] top-[42%] h-[24rem] w-[24rem] animate-aurora bg-brand-green/15 [animation-delay:-10s]" aria-hidden />
+
+      {/* 3D scene */}
+      <div className="absolute inset-0 opacity-80 md:opacity-100">
         <HeroScene />
       </div>
-      {/* Readability scrim over the 3D scene */}
-      <div className="absolute inset-0 bg-gradient-to-b from-night/30 via-transparent to-night" aria-hidden />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-36 lg:px-8">
-        <div className="max-w-4xl">
+      {/* Readability scrim */}
+      <div className="absolute inset-0 bg-gradient-to-b from-night/40 via-transparent to-night" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,transparent_40%,rgba(7,19,33,0.55))]" aria-hidden />
+
+      {/* Floating glass cards (desktop) — bob slowly, tilt & glow on hover */}
+      {floatingCards.map((card, i) => (
+        <motion.div
+          key={card.title}
+          className={`absolute z-20 hidden lg:block ${card.pos}`}
+          initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1, delay: card.delay, ease: [0.16, 1, 0.3, 1] }}
+          style={{ transform: `translate(${mouse.x * card.depth}px, ${mouse.y * card.depth}px)` }}
+        >
+          <div
+            className="group glass-strong w-56 rounded-2xl p-5 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-cyan/40 hover:shadow-glow-cyan"
+            style={{ animation: `float ${7 + i}s ease-in-out ${i * 0.6}s infinite` }}
+          >
+            <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-brand shadow-glow-cyan transition-transform duration-300 group-hover:scale-110">
+              <card.icon className="h-6 w-6 text-white" aria-hidden />
+            </span>
+            <p className="font-display text-lg font-semibold text-white">{card.title}</p>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {card.tags.map((tag) => (
+                <span key={tag} className="rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-muted">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      ))}
+
+      {/* Content */}
+      <div className="container-x relative z-10 mx-auto w-full max-w-7xl">
+        <motion.div
+          className="mx-auto max-w-5xl text-center"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
           <motion.p
-            custom={0}
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="mb-6 inline-flex items-center gap-2 rounded-full glass px-5 py-2 text-sm font-medium text-brand-cyan"
+            variants={item}
+            className="mb-8 inline-flex items-center gap-2.5 rounded-full glass px-5 py-2.5 text-sm font-medium text-brand-cyan"
           >
             <Sparkles className="h-4 w-4" aria-hidden />
             AI &amp; Enterprise Software Studio
+            <span className="ml-1 h-1.5 w-1.5 animate-pulse rounded-full bg-brand-green" aria-hidden />
           </motion.p>
 
           <motion.h1
-            custom={1}
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl"
+            variants={item}
+            className="font-display font-bold text-hero text-white"
           >
-            Building Intelligent{" "}
-            <span className="text-gradient">Digital Solutions</span> for Tomorrow
+            Building{" "}
+            <span className="relative inline-block align-baseline">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={heroWords[wordIndex]}
+                  className="text-gradient inline-block"
+                  initial={{ opacity: 0, y: "0.35em", filter: "blur(12px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: "-0.35em", filter: "blur(12px)" }}
+                  transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {heroWords[wordIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
+            <br />
+            Digital Solutions
           </motion.h1>
 
           <motion.p
-            custom={2}
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="mt-7 max-w-2xl text-lg leading-relaxed text-muted md:text-xl"
+            variants={item}
+            className="mx-auto mt-8 max-w-2xl text-body-lg text-muted"
           >
             We engineer AI-powered software, enterprise platforms, cloud solutions, and
-            full-stack applications that help businesses innovate faster.
+            full-stack applications that help ambitious businesses innovate faster.
           </motion.p>
 
-          <motion.div
-            custom={3}
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="mt-10 flex flex-wrap items-center gap-4"
-          >
+          <motion.div variants={item} className="mt-11 flex flex-wrap items-center justify-center gap-4">
             <Magnetic>
               <Button href="/contact" size="lg">
                 Start Your Project
@@ -88,22 +168,46 @@ export function Hero() {
               </Button>
             </Magnetic>
           </motion.div>
-        </div>
+
+          {/* Trust stats — each in a glass card with an icon */}
+          <motion.dl
+            variants={item}
+            className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4"
+          >
+            {stats.map((stat, i) => {
+              const Icon = statIcons[i] ?? Star;
+              return (
+                <div
+                  key={stat.label}
+                  className="group glass rounded-2xl p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-brand-cyan/30 hover:shadow-glow-cyan"
+                >
+                  <Icon className="mx-auto mb-2.5 h-6 w-6 text-brand-cyan transition-transform duration-300 group-hover:scale-110" aria-hidden />
+                  <dd className="font-display text-3xl font-bold text-gradient sm:text-[2.5rem]">
+                    <Counter value={stat.value} suffix={stat.suffix} />
+                  </dd>
+                  <dt className="mt-1.5 text-xs font-medium uppercase tracking-wider text-muted">
+                    {stat.label}
+                  </dt>
+                </div>
+              );
+            })}
+          </motion.dl>
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
       <motion.a
         href="#technologies"
         aria-label="Scroll to content"
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-muted transition-colors hover:text-brand-cyan"
+        className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 text-muted transition-colors hover:text-brand-cyan"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 1 }}
+        transition={{ delay: 2.4, duration: 1 }}
       >
         <motion.span
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-1"
+          className="flex flex-col items-center gap-1.5"
         >
           <span className="text-[10px] font-semibold uppercase tracking-[0.3em]">Scroll</span>
           <ChevronDown className="h-5 w-5" aria-hidden />

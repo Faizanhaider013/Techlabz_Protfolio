@@ -1,15 +1,15 @@
 import {
-  BadgeCheck, BrainCircuit, Building2, CloudCog, Compass, Database, Eye,
+  BadgeCheck, BrainCircuit, Building2, CalendarCheck, CloudCog, Compass, Database, Eye,
   Factory, Gauge, Gem, Globe, GraduationCap, Handshake, Headset, HeartPulse,
   Landmark, Lock, Palette, RadioTower, Rocket, ShieldCheck, ShoppingBag,
-  Smartphone, Sparkles, TrendingUp, Workflow, Zap, type LucideIcon,
+  Smartphone, Sparkles, Star, TrendingUp, Users, Workflow, Zap, type LucideIcon,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
-  BadgeCheck, BrainCircuit, Building2, CloudCog, Compass, Database, Eye,
+  BadgeCheck, BrainCircuit, Building2, CalendarCheck, CloudCog, Compass, Database, Eye,
   Factory, Gauge, Gem, Globe, GraduationCap, Handshake, Headset, HeartPulse,
   Landmark, Lock, Palette, RadioTower, Rocket, ShieldCheck, ShoppingBag,
-  Smartphone, Sparkles, TrendingUp, Workflow, Zap,
+  Smartphone, Sparkles, Star, TrendingUp, Users, Workflow, Zap,
 };
 
 /** Resolves a lucide icon by name (used by data-driven cards). */

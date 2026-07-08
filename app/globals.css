@@ -255,7 +255,266 @@ html.lenis, html.lenis body { height: auto; }
   @media (min-width: 1024px) { padding-inline: 2rem; }
 }
 
-/* Reduce motion: kill decorative animation */
+/* ------------------------------------------------------------------ */
+/*  Logo marquee — technology + client showcases                       */
+/*                                                                     */
+/*  A rail holds exactly two identical groups. Shifting it by          */
+/*  -50% - gap/2 lands group 2 precisely where group 1 started, so the */
+/*  loop is seamless even though the flex `gap` also sits between the  */
+/*  two groups. Transform-only, so it composites at 60 FPS.            */
+/* ------------------------------------------------------------------ */
+
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-50% - var(--marquee-gap) / 2), 0, 0); }
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.marquee-scope {
+  --marquee-duration: 44s; /* desktop */
+  --marquee-gap: 1.75rem;
+}
+
+@media (max-width: 1024px) {
+  .marquee-scope { --marquee-duration: 38s; --marquee-gap: 1.5rem; } /* tablet */
+}
+
+@media (max-width: 640px) {
+  .marquee-scope { --marquee-duration: 32s; --marquee-gap: 1.125rem; } /* mobile */
+}
+
+/* The client wall gets its own tempo — one row, so it can run a touch slower. */
+.client-marquee { --marquee-duration: 45s; }
+@media (max-width: 1024px) { .client-marquee { --marquee-duration: 38s; } }
+@media (max-width: 640px) { .client-marquee { --marquee-duration: 33s; } }
+
+.marquee-rail {
+  display: flex;
+  width: max-content;
+  gap: var(--marquee-gap);
+  will-change: transform;
+  animation: marquee-x var(--marquee-duration) linear infinite;
+  /* Idle until scrolled into view — see [data-marquee-active]. */
+  animation-play-state: paused;
+}
+
+/* Second row runs slightly quicker and in reverse, still inside the
+   40–45s / 35–40s / 30–35s bands. */
+.marquee-rail--reverse {
+  animation-duration: calc(var(--marquee-duration) * 0.95);
+  animation-direction: reverse;
+}
+
+[data-marquee-active="true"] .marquee-rail { animation-play-state: running; }
+
+/* Pause the hovered row only — neighbouring rows keep their constant speed.
+   Resumes from the exact same offset, never restarts. */
+[data-marquee-active="true"] .marquee-row:hover .marquee-rail { animation-play-state: paused; }
+
+/* Fade the rails out at both edges. */
+.marquee-row {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* Slow, staggered drift applied to each card's inner wrapper so it never
+   fights the marquee translate (parent) or the hover scale (child). */
+.logo-float {
+  animation: logo-float 7s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Glassmorphism logo card                                            */
+/* ------------------------------------------------------------------ */
+
+.logo-card {
+  position: relative;
+  border-radius: 16px;
+  background-color: #071321;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    transform 600ms var(--ease-out-expo),
+    box-shadow 600ms var(--ease-out-expo),
+    border-color 400ms ease;
+}
+
+/* Masked 1px cyan→purple ring. `inset: -1px` makes it land exactly on the
+   element's own 1px border, which fades out underneath it. */
+.logo-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(115deg, #33c6ff, #7d82ff, #b13eff, #33c6ff);
+  background-size: 300% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+
+.group\/card:hover .logo-card {
+  transform: scale(1.08);
+  border-color: transparent;
+  box-shadow: 0 26px 60px -22px rgba(51, 198, 255, 0.45);
+}
+
+.group\/card:hover .logo-card::before {
+  opacity: 1;
+  animation: gradient-x 3s linear infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  About section — immersive backdrop + brand orbit                   */
+/* ------------------------------------------------------------------ */
+
+/* Film-grain noise. Inline feTurbulence so nothing hits the network. */
+@utility bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Right-angle circuit traces with solder nodes. */
+@utility bg-circuit {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' fill='none' stroke='%2333c6ff' stroke-width='1'%3E%3Cpath d='M0 30h40V0M120 90H80v30M30 120V80H0M90 0v40h30'/%3E%3Cg fill='%2333c6ff' stroke='none'%3E%3Ccircle cx='40' cy='30' r='3'/%3E%3Ccircle cx='80' cy='90' r='3'/%3E%3Ccircle cx='30' cy='80' r='3'/%3E%3Ccircle cx='90' cy='40' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+@keyframes grid-pan {
+  from { background-position: 0 0; }
+  to { background-position: 60px 60px; }
+}
+
+/* Holographic scan lines drifting downward. */
+@keyframes scanline-drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-64px); }
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Keeps an orbiting chip upright while its ring rotates beneath it. The
+   centring translate is baked into the keyframes: it has to be the outermost
+   function so rotation stays about the chip's own centre, and a Tailwind
+   `-translate-x-1/2` on the same element would be clobbered by this animation. */
+@keyframes orbit-counter {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+/* Energy travelling outward along the circuit traces. */
+@keyframes circuit-pulse {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes particle-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.25; }
+  50% { transform: translate3d(0, -18px, 0); opacity: 0.8; }
+}
+
+@keyframes halo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.orbit-root {
+  container-type: inline-size; /* lets chips position in cqi, i.e. % of the orbit */
+  transform-style: preserve-3d;
+}
+
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  animation: orbit-spin var(--orbit-duration) linear infinite;
+}
+
+.orbit-ring--reverse { animation-direction: reverse; }
+
+/* Undoes the ring's rotation at the same rate, so logos never turn upside-down.
+   `max-content` is load-bearing: the anchor it sits in is 0×0, so a block box
+   would collapse to zero width and the centring translate would be a no-op. */
+.orbit-upright {
+  width: max-content;
+  transform: translate(-50%, -50%);
+  animation: orbit-counter var(--orbit-duration) linear infinite;
+}
+
+.orbit-ring--reverse .orbit-upright { animation-direction: reverse; }
+
+.circuit-trace {
+  stroke-dasharray: 1.5 4;
+  animation: circuit-pulse 2.4s linear infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Premium card: gradient top border + light sweep on hover           */
+/* ------------------------------------------------------------------ */
+
+@utility card-premium {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    transform 600ms var(--ease-out-expo),
+    box-shadow 600ms var(--ease-out-expo),
+    border-color 400ms ease;
+
+  /* Gradient top border. */
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #33c6ff, #b13eff, transparent);
+    opacity: 0.55;
+    transition: opacity 400ms ease;
+  }
+
+  /* Diagonal light sweep, parked off-canvas until hover. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.09) 48%, transparent 62%);
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba(51, 198, 255, 0.28);
+    box-shadow: 0 30px 70px -28px rgba(51, 198, 255, 0.5);
+  }
+
+  &:hover::before { opacity: 1; }
+
+  &:hover::after {
+    transform: translateX(120%);
+    transition: transform 900ms var(--ease-out-expo);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reduce motion: no scroll, no drift — the rails become a wrapping   */
+/*  grid and the duplicated group is removed from the flow.            */
+/* ------------------------------------------------------------------ */
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -263,4 +522,29 @@ html.lenis, html.lenis body { height: auto; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  .marquee-row { mask-image: none; -webkit-mask-image: none; }
+
+  .marquee-rail {
+    animation: none !important;
+    transform: none !important;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .marquee-rail > [data-marquee-clone="true"],
+  .marquee-rail [data-marquee-dupe] { display: none; }
+
+  .marquee-rail > ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .logo-float { animation: none !important; }
+
+  /* The orbit's rings and chips must both stop, or the chips end up rotated. */
+  .orbit-ring, .orbit-upright, .circuit-trace { animation: none !important; }
+  .circuit-trace { stroke-dasharray: none; }
 }

@@ -2,6 +2,12 @@
 
 import { motion } from "framer-motion";
 
+const rise = (delay: number) => ({
+  initial: { opacity: 0, y: 32, filter: "blur(8px)" },
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  transition: { duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] as const },
+});
+
 /** Shared inner-page hero band with animated headline + ambient glows. */
 export function PageHeader({
   eyebrow,
@@ -13,36 +19,24 @@ export function PageHeader({
   description?: string;
 }) {
   return (
-    <section className="relative overflow-hidden pb-16 pt-40 md:pb-24 md:pt-48">
+    <section className="relative overflow-hidden pb-16 pt-40 md:pb-24 md:pt-52">
       <div className="absolute inset-0 bg-grid" aria-hidden />
-      <div className="glow-blob left-[-8%] top-[-20%] h-96 w-96 bg-brand-cyan/40" aria-hidden />
-      <div className="glow-blob right-[-8%] top-[10%] h-96 w-96 bg-brand-purple/40" aria-hidden />
+      <div className="glow-blob left-[-8%] top-[-20%] h-[28rem] w-[28rem] animate-aurora bg-brand-cyan/40" aria-hidden />
+      <div className="glow-blob right-[-8%] top-[6%] h-[28rem] w-[28rem] animate-aurora bg-brand-purple/40 [animation-delay:-8s]" aria-hidden />
 
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="container-x relative mx-auto max-w-7xl">
         <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-5 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-cyan"
+          {...rise(0)}
+          className="mb-6 inline-flex items-center gap-2.5 rounded-full glass px-4 py-2 text-eyebrow font-semibold uppercase text-brand-cyan"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-gradient-brand" aria-hidden />
           {eyebrow}
         </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-3xl font-display text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
-        >
+        <motion.h1 {...rise(0.1)} className="max-w-4xl font-display font-bold text-hero text-white">
           {title}
         </motion.h1>
         {description && (
-          <motion.p
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg"
-          >
+          <motion.p {...rise(0.2)} className="mt-7 max-w-2xl text-body-lg text-muted">
             {description}
           </motion.p>
         )}

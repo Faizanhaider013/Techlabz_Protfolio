@@ -9,16 +9,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-gradient-brand text-night shadow-glow-cyan hover:shadow-glow-purple hover:scale-[1.03] active:scale-[0.98] text-white",
+          "bg-gradient-brand-animated text-white shadow-glow-cyan hover:shadow-glow-purple hover:scale-[1.03] active:scale-[0.98]",
         outline:
           "glass text-foreground hover:border-brand-cyan/50 hover:bg-white/[0.07] hover:scale-[1.03] active:scale-[0.98]",
         ghost:
           "text-muted hover:text-white hover:bg-white/5",
       },
       size: {
-        default: "h-12 px-7 text-sm",
-        lg: "h-14 px-9 text-base",
-        sm: "h-10 px-5 text-sm",
+        default: "h-13 px-8 text-[0.95rem]",
+        lg: "h-15 px-10 text-base",
+        sm: "h-11 px-6 text-sm",
       },
     },
     defaultVariants: { variant: "primary", size: "default" },

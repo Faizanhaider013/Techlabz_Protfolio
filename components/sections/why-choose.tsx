@@ -26,7 +26,7 @@ export function WhyChoose() {
             <motion.div
               key={item.title}
               variants={staggerChild}
-              className="group glass relative overflow-hidden rounded-3xl p-6 transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-cyan/30"
+              className="group glass relative overflow-hidden rounded-3xl p-7 transition-all duration-500 hover:-translate-y-2 hover:border-brand-cyan/30 hover:shadow-card-hover"
             >
               {/* Hover gradient wash */}
               <div
@@ -40,10 +40,10 @@ export function WhyChoose() {
               <div className="relative">
                 <ServiceIcon
                   name={item.icon}
-                  className="mb-4 h-7 w-7 text-brand-cyan transition-transform duration-500 group-hover:scale-110"
+                  className="mb-5 h-9 w-9 text-brand-cyan transition-transform duration-500 group-hover:scale-110"
                 />
-                <h3 className="font-display text-lg font-semibold text-white">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{item.description}</p>
+                <h3 className="font-display text-xl font-semibold text-white">{item.title}</h3>
+                <p className="mt-2.5 text-body text-muted">{item.description}</p>
               </div>
             </motion.div>
           ))}

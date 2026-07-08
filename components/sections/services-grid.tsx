@@ -26,7 +26,7 @@ export function ServicesGrid() {
               aria-selected={filter === cat.id}
               onClick={() => setFilter(cat.id)}
               className={cn(
-                "relative rounded-full px-5 py-2.5 font-display text-sm font-medium transition-all duration-300",
+                "relative rounded-full px-6 py-3 font-display text-[0.95rem] font-medium transition-all duration-300",
                 filter === cat.id
                   ? "text-white"
                   : "glass text-muted hover:text-white"
@@ -59,40 +59,40 @@ export function ServicesGrid() {
                 <TiltCard className="group h-full">
                   <Link
                     href={`/services/${service.slug}`}
-                    className="gradient-border flex h-full flex-col rounded-3xl p-7 transition-shadow duration-500 hover:shadow-glow-cyan"
+                    className="gradient-border flex h-full flex-col rounded-[1.75rem] p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-card-hover"
                   >
-                    <div className="mb-5 flex items-center justify-between">
-                      <span className="inline-flex h-13 w-13 items-center justify-center rounded-2xl glass transition-transform duration-500 group-hover:scale-110">
+                    <div className="mb-6 flex items-center justify-between">
+                      <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl glass transition-all duration-500 group-hover:scale-110 group-hover:shadow-glow-cyan">
                         <ServiceIcon
                           name={service.icon}
-                          className="h-6 w-6 text-brand-cyan"
+                          className="h-8 w-8 text-brand-cyan transition-colors group-hover:text-white"
                         />
                       </span>
                       <ArrowUpRight
-                        className="h-5 w-5 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-brand-cyan"
+                        className="h-6 w-6 text-muted-dark transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-brand-cyan"
                         aria-hidden
                       />
                     </div>
-                    <h3 className="font-display text-xl font-semibold text-white">
+                    <h3 className="font-display font-semibold text-card text-white">
                       {service.shortTitle}
                     </h3>
-                    <p className="mt-2.5 text-sm leading-relaxed text-muted">
+                    <p className="mt-3 flex-1 text-body text-muted">
                       {service.description.length > 130
                         ? `${service.description.slice(0, 130)}…`
                         : service.description}
                     </p>
                     {/* Tech chips */}
-                    <div className="mt-5 flex flex-wrap gap-1.5">
+                    <div className="mt-6 flex flex-wrap gap-2">
                       {service.technologies.slice(0, 4).map((tech) => (
                         <span
                           key={tech}
-                          className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-muted"
+                          className="rounded-full bg-white/5 px-3 py-1.5 text-xs font-medium text-muted"
                         >
                           {tech}
                         </span>
                       ))}
                       {service.technologies.length > 4 && (
-                        <span className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-brand-cyan">
+                        <span className="rounded-full bg-white/5 px-3 py-1.5 text-xs font-medium text-brand-cyan">
                           +{service.technologies.length - 4}
                         </span>
                       )}

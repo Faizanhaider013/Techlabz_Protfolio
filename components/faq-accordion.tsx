@@ -22,12 +22,12 @@ export function FaqAccordion({ faqs }: { faqs: { question: string; answer: strin
             )}
           >
             <button
-              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+              className="flex w-full items-center justify-between gap-4 px-7 py-6 text-left"
               onClick={() => setOpen(isOpen ? null : i)}
               aria-expanded={isOpen}
               aria-controls={`faq-panel-${i}`}
             >
-              <span className="font-display font-semibold text-white">{faq.question}</span>
+              <span className="font-display text-lg font-semibold text-white">{faq.question}</span>
               <motion.span
                 animate={{ rotate: isOpen ? 45 : 0 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -45,7 +45,7 @@ export function FaqAccordion({ faqs }: { faqs: { question: string; answer: strin
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <p className="px-6 pb-5 text-sm leading-relaxed text-muted">{faq.answer}</p>
+                  <p className="px-7 pb-6 text-body text-muted">{faq.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

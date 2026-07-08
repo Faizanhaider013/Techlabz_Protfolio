@@ -56,17 +56,17 @@ export function Testimonials() {
               exit={{ opacity: 0, y: -24 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <blockquote className="text-lg leading-relaxed text-foreground md:text-xl">
+              <blockquote className="font-display text-2xl font-medium leading-snug text-foreground md:text-[1.75rem]">
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
-              <figcaption className="mt-8 flex items-center gap-4">
+              <figcaption className="mt-9 flex items-center gap-4">
                 {/* Initials avatar */}
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-brand font-display text-sm font-bold text-white">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-brand font-display text-base font-bold text-white shadow-glow-cyan">
                   {current.name.split(" ").map((n) => n[0]).join("")}
                 </span>
                 <div>
-                  <p className="font-display font-semibold text-white">{current.name}</p>
-                  <p className="text-sm text-muted">{current.role}</p>
+                  <p className="font-display text-lg font-semibold text-white">{current.name}</p>
+                  <p className="text-body text-muted">{current.role}</p>
                 </div>
               </figcaption>
             </motion.figure>

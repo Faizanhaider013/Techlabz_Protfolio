@@ -15,11 +15,11 @@ export function CTA() {
           <div className="absolute inset-0 bg-grid opacity-50" aria-hidden />
 
           <div className="relative">
-            <h2 className="mx-auto max-w-3xl font-display text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h2 className="mx-auto max-w-3xl font-display font-bold text-display text-white">
               Let&apos;s build something{" "}
               <span className="text-gradient">amazing</span> together.
             </h2>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+            <p className="mx-auto mt-7 max-w-xl text-body-lg text-muted">
               Tell us about your product, platform, or AI ambition — we&apos;ll come back
               within 48 hours with a plan.
             </p>

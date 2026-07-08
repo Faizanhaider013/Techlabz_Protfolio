@@ -6,6 +6,7 @@ import { ServiceIcon } from "@/components/service-icon";
 import { Counter } from "@/components/ui/counter";
 import { CTA } from "@/components/sections/cta";
 import { TechMarquee } from "@/components/sections/tech-marquee";
+import { TechLogoSprite } from "@/components/tech-logo-sprite";
 import { TimelineSection } from "@/components/sections/timeline";
 import { TeamGrid } from "@/components/sections/team-grid";
 import { processSteps, stats, values } from "@/lib/site";
@@ -20,6 +21,8 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
+      {/* Mounted once — TechMarquee <use>s these symbols. */}
+      <TechLogoSprite />
       <PageHeader
         eyebrow="About Tech Labz"
         title={

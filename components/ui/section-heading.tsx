@@ -18,20 +18,25 @@ export function SectionHeading({
   return (
     <Reveal
       className={cn(
-        "mb-14 max-w-3xl md:mb-20",
+        "mb-16 max-w-3xl md:mb-20",
         align === "center" ? "mx-auto text-center" : "text-left",
         className
       )}
     >
-      <p className="mb-4 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-cyan">
+      <p
+        className={cn(
+          "mb-5 inline-flex items-center gap-2.5 rounded-full glass px-4 py-2 text-eyebrow font-semibold uppercase text-brand-cyan",
+          align === "center" && "mx-auto"
+        )}
+      >
         <span className="h-1.5 w-1.5 rounded-full bg-gradient-brand" aria-hidden />
         {eyebrow}
       </p>
-      <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-5xl">
-        {title}
-      </h2>
+      <h2 className="font-display font-bold text-h2 text-white">{title}</h2>
       {description && (
-        <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">{description}</p>
+        <p className={cn("mt-6 text-body-lg text-muted", align === "center" && "mx-auto")}>
+          {description}
+        </p>
       )}
     </Reveal>
   );

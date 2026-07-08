@@ -5,19 +5,16 @@
 
 export const siteConfig = {
   name: "Tech Labz",
-  url: "https://techlabz.com",
+  url: "https://techlabz.net",
   tagline: "Building Intelligent Digital Solutions for Tomorrow",
   description:
     "Tech Labz engineers AI-powered software, enterprise platforms, cloud solutions, and full-stack applications that help businesses innovate faster.",
-  email: "hello@techlabz.com",
+  email: "hr@techlabz.net",
   phone: "+1 (555) 012-3456",
   address: "Suite 400, Innovation Tower, Silicon District",
   hours: "Mon – Fri, 9:00 AM – 6:00 PM",
   socials: {
-    linkedin: "https://linkedin.com/company/techlabz",
-    twitter: "https://twitter.com/techlabz",
-    github: "https://github.com/techlabz",
-    instagram: "https://instagram.com/techlabz",
+    linkedin: "https://www.linkedin.com/company/techlabz-solution/",
   },
 };
 
@@ -28,6 +25,65 @@ export const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
+/** Header navigation — includes in-page anchors to homepage sections. */
+export const headerLinks = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Technologies", href: "/#technologies" },
+  { label: "Industries", href: "/#industries" },
+  { label: "Contact", href: "/contact" },
+];
+
+/** Rotating words in the hero headline (slow fade+blur, ~3.5s each). */
+export const heroWords = [
+  "Intelligent",
+  "AI-Powered",
+  "Enterprise",
+  "Cloud-Native",
+  "Future-Ready",
+];
+
+/**
+ * The "Trusted by" wall. Most of our work sits under NDA, so the wall shows the
+ * sector rather than inventing company names — swap an entry's `client` for a
+ * real name (and drop `confidential`) once a logo release is signed.
+ */
+export const clientIndustries = [
+  { industry: "Healthcare", icon: "HeartPulse", client: "Confidential Client", confidential: true },
+  { industry: "Finance", icon: "Landmark", client: "Confidential Client", confidential: true },
+  { industry: "Retail", icon: "ShoppingBag", client: "Confidential Client", confidential: true },
+  { industry: "Manufacturing", icon: "Factory", client: "Confidential Client", confidential: true },
+  { industry: "Education", icon: "GraduationCap", client: "Confidential Client", confidential: true },
+  { industry: "Telecommunications", icon: "RadioTower", client: "Confidential Client", confidential: true },
+  { industry: "Government", icon: "Building2", client: "Confidential Client", confidential: true },
+  { industry: "Startups", icon: "Rocket", client: "Confidential Client", confidential: true },
+];
+
+/** Delivery guarantees shown in the trust strip. */
+export const guarantees = [
+  { label: "NDA-protected engagements", icon: "Lock" },
+  { label: "48-hour response time", icon: "Zap" },
+  { label: "99% client satisfaction", icon: "Star" },
+  { label: "Dedicated senior team", icon: "Users" },
+  { label: "On-time, on-budget delivery", icon: "CalendarCheck" },
+];
+
+/**
+ * Technology partnerships and compliance readiness (illustrative — replace
+ * with badges you have actually earned before publishing).
+ */
+export const partners = [
+  "ServiceNow", "AWS", "Microsoft Azure", "Google Cloud", "Docker", "Kubernetes",
+];
+
+export const compliance = [
+  { name: "SOC 2", detail: "Type II ready" },
+  { name: "ISO 27001", detail: "Aligned" },
+  { name: "GDPR", detail: "Compliant" },
+  { name: "HIPAA", detail: "Ready" },
+];
+
 export const stats = [
   { value: 50, suffix: "+", label: "Projects Delivered" },
   { value: 20, suffix: "+", label: "Global Clients" },
@@ -35,11 +91,8 @@ export const stats = [
   { value: 99, suffix: "%", label: "Client Satisfaction" },
 ];
 
-export const technologies = [
-  "React", "Next.js", "Node.js", "ServiceNow", "AWS", "Azure", "Python",
-  "TensorFlow", "MongoDB", "Docker", "Kubernetes", "PostgreSQL", "OpenAI",
-  "Claude", "LangChain", "Pinecone", "Redis",
-];
+/* The technology showcase is data-driven from `lib/tech-stack.ts`, which pairs
+   each name with its official SVG mark. */
 
 export const whyChooseUs = [
   {
@@ -165,33 +218,33 @@ export const processSteps = [
 
 export const values = [
   {
-    title: "Craftsmanship",
-    description: "We sweat the details others ship around.",
+    title: "Innovation",
+    description: "We ship what's next, not what's safe — AI woven into products, never bolted on.",
+    icon: "Sparkles",
+  },
+  {
+    title: "Engineering Excellence",
+    description: "Rigorous review, real test coverage, and code we're proud to sign our name to.",
     icon: "Gem",
   },
   {
     title: "Transparency",
-    description: "Open roadmaps, honest estimates, no surprises.",
+    description: "Open roadmaps, honest estimates, and progress you can click — never just trust.",
     icon: "Eye",
   },
   {
-    title: "Velocity",
-    description: "Momentum is a feature. We ship every sprint.",
-    icon: "Gauge",
-  },
-  {
-    title: "Partnership",
-    description: "Your goals are our metrics. We win together.",
+    title: "Long-Term Partnership",
+    description: "Your goals become our metrics. Most clients stay with us long past launch.",
     icon: "Handshake",
   },
 ];
 
 export const timeline = [
-  { year: "2021", title: "Founded", description: "Tech Labz launches with a three-person team and a conviction that enterprise software should feel like consumer software." },
-  { year: "2022", title: "ServiceNow Practice", description: "Certified ServiceNow partner practice established; first Fortune-500 ITSM rollout delivered." },
-  { year: "2023", title: "AI Division", description: "Dedicated AI/ML division formed — shipping RAG systems, copilots, and intelligent agents to production." },
-  { year: "2024", title: "Global Expansion", description: "Clients across 4 continents; team grows past 40 engineers, designers, and architects." },
-  { year: "2025", title: "20+ Enterprise Clients", description: "Recognized for enterprise delivery excellence with a 99% client-satisfaction score." },
+  { year: "2021", title: "Company Founded", description: "Tech Labz launches with a three-person team and a conviction that enterprise software should feel like consumer software." },
+  { year: "2022", title: "First Enterprise Project", description: "Certified ServiceNow partner practice established; first Fortune-500 ITSM rollout delivered end to end." },
+  { year: "2023", title: "AI Services Introduced", description: "Dedicated AI/ML division formed — shipping RAG systems, copilots, and intelligent agents to production." },
+  { year: "2024", title: "Cloud & DevOps Expansion", description: "Containerized, auto-scaling platforms across AWS, Azure, and GCP; team grows past 40 engineers and architects." },
+  { year: "2025", title: "Serving Global Clients", description: "Clients across four continents, recognized for enterprise delivery with a 99% client-satisfaction score." },
 ];
 
 export const team = [
@@ -201,6 +254,64 @@ export const team = [
   { name: "Elena Rodriguez", role: "AI/ML Lead", initials: "ER" },
   { name: "Hassan Raza", role: "ServiceNow Practice Lead", initials: "HR" },
   { name: "Priya Sharma", role: "Head of Delivery", initials: "PS" },
+];
+
+export const caseStudies = [
+  {
+    tag: "ServiceNow · ITSM",
+    title: "43% faster incident resolution for a health network",
+    description:
+      "Re-architected a Fortune-500 ServiceNow estate with AI-assisted triage, a healthy CMDB, and Virtual Agent — cutting mean time to resolution nearly in half.",
+    metric: "43%",
+    metricLabel: "Faster MTTR",
+    accent: "cyan",
+  },
+  {
+    tag: "AI · RAG Copilot",
+    title: "An AI knowledge copilot that paid for itself in a quarter",
+    description:
+      "Built a retrieval-augmented copilot on top of a capital firm's knowledge base — grounded, auditable answers that deflected thousands of support hours.",
+    metric: "1 Qtr",
+    metricLabel: "To ROI",
+    accent: "purple",
+  },
+  {
+    tag: "Full-Stack · Commerce",
+    title: "From Figma to a production platform in nine weeks",
+    description:
+      "Designed and shipped a headless commerce platform with Next.js and a real-time data layer — fast, beautiful, and conversion-optimized from day one.",
+    metric: "9 wks",
+    metricLabel: "To launch",
+    accent: "green",
+  },
+];
+
+export const homeFaqs = [
+  {
+    question: "What kind of companies do you work with?",
+    answer:
+      "From venture-backed startups shipping their first MVP to enterprises modernizing legacy estates. Our process scales to the engagement — enterprise rigor at startup speed.",
+  },
+  {
+    question: "How do engagements typically start?",
+    answer:
+      "With a discovery call within 48 hours of your inquiry, followed by a short paid discovery sprint that produces a concrete plan, architecture, and estimate before full delivery begins.",
+  },
+  {
+    question: "Do you build with AI, or just talk about it?",
+    answer:
+      "We ship production AI — RAG systems, copilots, and agents with evals, guardrails, and observability. We're model-agnostic across OpenAI, Claude, Gemini, and open models.",
+  },
+  {
+    question: "What happens after launch?",
+    answer:
+      "Every project includes a support window, and most clients continue on a managed-services retainer covering monitoring, enhancements, and 24/7 incident response.",
+  },
+  {
+    question: "Can you work with our existing team and stack?",
+    answer:
+      "Absolutely. We embed with in-house teams, adopt your tooling and conventions, and leave behind documentation and practices your engineers own.",
+  },
 ];
 
 export const contactFaqs = [
