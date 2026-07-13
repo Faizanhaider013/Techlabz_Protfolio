@@ -126,7 +126,12 @@ export function ContactForm() {
         />
       </div>
 
-      <Button type="submit" size="lg" disabled={status === "submitting"} className="justify-self-start">
+      <Button
+        type="submit"
+        size="lg"
+        disabled={status === "submitting"}
+        className="w-full justify-self-stretch sm:w-auto sm:justify-self-start"
+      >
         {status === "submitting" ? (
           <>
             <Loader2 className="h-5 w-5 animate-spin" aria-hidden />

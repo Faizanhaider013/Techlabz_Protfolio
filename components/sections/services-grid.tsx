@@ -26,7 +26,7 @@ export function ServicesGrid() {
               aria-selected={filter === cat.id}
               onClick={() => setFilter(cat.id)}
               className={cn(
-                "relative rounded-full px-6 py-3 font-display text-[0.95rem] font-medium transition-all duration-300",
+                "relative min-h-12 rounded-full px-5 py-3 font-display text-[0.95rem] font-medium transition-all duration-300 sm:px-6",
                 filter === cat.id
                   ? "text-white"
                   : "glass text-muted hover:text-white"

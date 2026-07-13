@@ -15,7 +15,7 @@ export function NewsletterForm() {
         setSubscribed(true);
       }}
     >
-      <div className="glass flex items-center rounded-full p-1.5 transition-colors focus-within:border-brand-cyan/50">
+      <div className="glass flex items-center rounded-full p-1 transition-colors focus-within:border-brand-cyan/50">
         <label htmlFor="newsletter-email" className="sr-only">
           Email address
         </label>
@@ -30,7 +30,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           aria-label="Subscribe to newsletter"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-brand text-white transition-transform hover:scale-105"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-brand text-white transition-transform hover:scale-105"
         >
           {subscribed ? <Check className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
         </button>

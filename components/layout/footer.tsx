@@ -13,7 +13,7 @@ export function Footer() {
       <div className="glow-blob -top-40 left-1/2 h-80 w-[42rem] -translate-x-1/2 bg-brand-purple/40" aria-hidden />
 
       <div className="container-x relative mx-auto max-w-7xl pb-10 pt-20">
-        <div className="grid gap-14 lg:grid-cols-[1.5fr_1fr_1fr_1.4fr]">
+        <div className="grid gap-12 sm:grid-cols-2 sm:gap-14 lg:grid-cols-[1.5fr_1fr_1fr_1.4fr]">
           {/* Brand */}
           <div>
             <Logo tagline />
@@ -84,12 +84,17 @@ export function Footer() {
             <NewsletterForm />
             <ul className="mt-7 space-y-3 text-body text-muted">
               <li className="flex items-center gap-3">
-                <Mail className="h-4.5 w-4.5 text-brand-cyan" aria-hidden />
-                <a href={`mailto:${siteConfig.email}`} className="hover:text-brand-cyan">{siteConfig.email}</a>
+                <Mail className="h-4.5 w-4.5 shrink-0 text-brand-cyan" aria-hidden />
+                <a href={`mailto:${siteConfig.email}`} className="break-all hover:text-brand-cyan">{siteConfig.email}</a>
               </li>
               <li className="flex items-center gap-3">
-                <LinkedinIcon className="h-4.5 w-4.5 text-brand-cyan" />
-                <a href={siteConfig.socials.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-brand-cyan">
+                <LinkedinIcon className="h-4.5 w-4.5 shrink-0 text-brand-cyan" />
+                <a
+                  href={siteConfig.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-all hover:text-brand-cyan"
+                >
                   linkedin.com/company/techlabz-solution
                 </a>
               </li>

@@ -64,7 +64,7 @@ export default function ContactPage() {
         <div className="container-x relative mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.3fr_1fr]">
           {/* Form */}
           <Reveal direction="right">
-            <div className="gradient-border rounded-[1.75rem] p-8 md:p-10">
+            <div className="gradient-border rounded-[1.75rem] p-6 sm:p-8 md:p-10">
               <h2 className="font-display text-h3 font-bold text-white">
                 Tell us about your project
               </h2>

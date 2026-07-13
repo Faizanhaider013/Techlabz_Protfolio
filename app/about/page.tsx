@@ -132,7 +132,7 @@ export default function AboutPage() {
               </>
             }
           />
-          <RevealStagger className="grid gap-5 md:grid-cols-5">
+          <RevealStagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {processSteps.map((step) => (
               <div key={step.step} className="group relative">
                 <div className="glass h-full rounded-3xl p-6 transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-cyan/30">

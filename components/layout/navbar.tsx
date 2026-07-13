@@ -38,6 +38,23 @@ export function Navbar() {
     setOpen(false);
   }
 
+  // While the drawer is open, freeze page scroll (Lenis scrolls the window
+  // natively, so clamping the root is enough) and auto-close if the viewport
+  // grows into the desktop layout.
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    const prev = root.style.overflow;
+    root.style.overflow = "hidden";
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => mq.matches && setOpen(false);
+    mq.addEventListener("change", onChange);
+    return () => {
+      root.style.overflow = prev;
+      mq.removeEventListener("change", onChange);
+    };
+  }, [open]);
+
   // Hash links (Technologies/Industries) are never "active" — they only
   // underline on hover; page routes underline when their route matches.
   const isActive = (href: string) => !href.includes("#") && pathname === href;
@@ -115,7 +132,7 @@ export function Navbar() {
 
         {/* Mobile toggle */}
         <button
-          className="rounded-lg p-2 text-white lg:hidden"
+          className="-mr-2 flex h-12 w-12 items-center justify-center rounded-lg text-white lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
@@ -132,13 +149,16 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="glass-strong absolute inset-x-4 top-[86px] rounded-2xl p-4 shadow-card lg:hidden"
+            className="glass-strong absolute inset-x-4 top-[86px] max-h-[calc(100dvh-6.5rem)] overflow-y-auto rounded-2xl p-4 shadow-card lg:hidden"
           >
             <ul className="flex flex-col gap-1">
               {headerLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
+                    // Hash links to the current page don't change the pathname,
+                    // so the route-change close never fires — close explicitly.
+                    onClick={() => setOpen(false)}
                     className={cn(
                       "block rounded-xl px-5 py-4 text-lg font-medium transition-colors",
                       isActive(link.href)

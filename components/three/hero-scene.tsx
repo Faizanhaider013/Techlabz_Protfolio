@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
+import { useInView } from "framer-motion";
 import * as THREE from "three";
 
 /**
@@ -83,11 +84,11 @@ function useConnections(points: THREE.Vector3[], maxDist: number, maxLinks: numb
   }, [points, maxDist, maxLinks]);
 }
 
-function NeuralGlobe() {
+function NeuralGlobe({ nodeCount, maxLinks }: { nodeCount: number; maxLinks: number }) {
   const group = useRef<THREE.Group>(null);
   const glowMap = useGlowTexture();
-  const { positions, colors, points } = useSphereNodes(340, 2.25);
-  const lineVerts = useConnections(points, 0.62, 620);
+  const { positions, colors, points } = useSphereNodes(nodeCount, 2.25);
+  const lineVerts = useConnections(points, 0.62, maxLinks);
 
   useFrame((state, delta) => {
     const g = group.current;
@@ -197,16 +198,16 @@ function OrbitingAccents() {
 }
 
 /** Ambient drifting dust filling the hero volume. */
-function Dust() {
+function Dust({ count }: { count: number }) {
   const glowMap = useGlowTexture();
   const positions = useMemo(() => {
-    const arr = new Float32Array(360 * 3);
+    const arr = new Float32Array(count * 3);
     // Deterministic LCG instead of Math.random — keeps renders pure & stable.
     let seed = 42;
     const rand = () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
     for (let i = 0; i < arr.length; i++) arr[i] = (rand() - 0.5) * 15;
     return arr;
-  }, []);
+  }, [count]);
   const ref = useRef<THREE.Points>(null);
   useFrame((_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.012;
@@ -232,18 +233,40 @@ function Dust() {
 }
 
 export default function HeroScene() {
+  const wrapper = useRef<HTMLDivElement>(null);
+  const inView = useInView(wrapper, { margin: "80px" });
+
+  // Decided once at mount (component is client-only, ssr:false): small or
+  // coarse-pointer viewports get lighter geometry, a lower DPR cap, and no
+  // MSAA — the additive-blended points look identical without it.
+  const [lite] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 || window.matchMedia("(pointer: coarse)").matches)
+  );
+  const [reduced] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+
   return (
-    <Canvas
-      camera={{ position: [0, 0, 6.6], fov: 45 }}
-      dpr={[1, 1.8]}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      className="!absolute inset-0"
-      aria-hidden
-    >
-      <NeuralGlobe />
-      <HolographicRings />
-      <OrbitingAccents />
-      <Dust />
-    </Canvas>
+    <div ref={wrapper} className="absolute inset-0">
+      <Canvas
+        camera={{ position: [0, 0, 6.6], fov: 45 }}
+        dpr={lite ? [1, 1.5] : [1, 1.8]}
+        gl={{ antialias: !lite, alpha: true, powerPreference: "high-performance" }}
+        // Reduced motion gets a single static frame; scrolling past the hero
+        // parks the loop so the globe never burns frames it can't show.
+        frameloop={reduced || !inView ? "demand" : "always"}
+        className="!absolute inset-0"
+        aria-hidden
+      >
+        <NeuralGlobe nodeCount={lite ? 220 : 340} maxLinks={lite ? 360 : 620} />
+        <HolographicRings />
+        <OrbitingAccents />
+        <Dust count={lite ? 160 : 360} />
+      </Canvas>
+    </div>
   );
 }

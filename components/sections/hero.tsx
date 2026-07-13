@@ -2,7 +2,14 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { ArrowRight, ChevronDown, Sparkles, Cpu, Cloud, ShieldCheck, Rocket, Users, Clock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/ui/magnetic";
@@ -40,10 +47,56 @@ const floatingCards = [
 
 const statIcons = [Rocket, Users, Clock, Star];
 
+/** One floating card, parallaxed via shared motion values — no re-renders. */
+function FloatingCard({
+  card,
+  index,
+  mouseX,
+  mouseY,
+}: {
+  card: (typeof floatingCards)[number];
+  index: number;
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+}) {
+  const x = useTransform(mouseX, (v) => v * card.depth);
+  const y = useTransform(mouseY, (v) => v * card.depth);
+  return (
+    <motion.div
+      className={`absolute z-20 hidden lg:block ${card.pos}`}
+      initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 1, delay: card.delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <motion.div style={{ x, y }}>
+        <div
+          className="group glass-strong w-56 rounded-2xl p-5 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-cyan/40 hover:shadow-glow-cyan"
+          style={{ animation: `float ${7 + index}s ease-in-out ${index * 0.6}s infinite` }}
+        >
+          <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-brand shadow-glow-cyan transition-transform duration-300 group-hover:scale-110">
+            <card.icon className="h-6 w-6 text-white" aria-hidden />
+          </span>
+          <p className="font-display text-lg font-semibold text-white">{card.title}</p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {card.tags.map((tag) => (
+              <span key={tag} className="rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-muted">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export function Hero() {
   const [wordIndex, setWordIndex] = useState(0);
   const reduce = useReducedMotion();
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  // Normalized -0.5..0.5 pointer position as motion values, so parallax
+  // never triggers a React re-render of the whole hero.
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
   // Rotate the highlighted word slowly.
   useEffect(() => {
@@ -51,15 +104,17 @@ export function Hero() {
     return () => clearInterval(id);
   }, []);
 
-  // Track normalized mouse position (-0.5..0.5) for parallax.
+  // Track the pointer for parallax — desktop pointers only; the floating
+  // cards are hidden below lg, so there is nothing to parallax on touch.
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
     const onMove = (e: MouseEvent) => {
-      setMouse({ x: e.clientX / window.innerWidth - 0.5, y: e.clientY / window.innerHeight - 0.5 });
+      mouseX.set(e.clientX / window.innerWidth - 0.5);
+      mouseY.set(e.clientY / window.innerHeight - 0.5);
     };
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
-  }, [reduce]);
+  }, [reduce, mouseX, mouseY]);
 
   return (
     <section className="relative flex min-h-svh items-center overflow-hidden pb-24 pt-40 md:pt-44" aria-label="Hero">
@@ -80,31 +135,7 @@ export function Hero() {
 
       {/* Floating glass cards (desktop) — bob slowly, tilt & glow on hover */}
       {floatingCards.map((card, i) => (
-        <motion.div
-          key={card.title}
-          className={`absolute z-20 hidden lg:block ${card.pos}`}
-          initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1, delay: card.delay, ease: [0.16, 1, 0.3, 1] }}
-          style={{ transform: `translate(${mouse.x * card.depth}px, ${mouse.y * card.depth}px)` }}
-        >
-          <div
-            className="group glass-strong w-56 rounded-2xl p-5 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-cyan/40 hover:shadow-glow-cyan"
-            style={{ animation: `float ${7 + i}s ease-in-out ${i * 0.6}s infinite` }}
-          >
-            <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-brand shadow-glow-cyan transition-transform duration-300 group-hover:scale-110">
-              <card.icon className="h-6 w-6 text-white" aria-hidden />
-            </span>
-            <p className="font-display text-lg font-semibold text-white">{card.title}</p>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {card.tags.map((tag) => (
-                <span key={tag} className="rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-muted">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        <FloatingCard key={card.title} card={card} index={i} mouseX={mouseX} mouseY={mouseY} />
       ))}
 
       {/* Content */}
@@ -117,7 +148,7 @@ export function Hero() {
         >
           <motion.p
             variants={item}
-            className="mb-8 inline-flex items-center gap-2.5 rounded-full glass px-5 py-2.5 text-sm font-medium text-brand-cyan"
+            className="mb-8 inline-flex items-center gap-2.5 rounded-full glass px-4 py-2 text-xs font-medium text-brand-cyan sm:px-5 sm:py-2.5 sm:text-sm"
           >
             <Sparkles className="h-4 w-4" aria-hidden />
             AI &amp; Enterprise Software Studio
@@ -155,15 +186,18 @@ export function Hero() {
             full-stack applications that help ambitious businesses innovate faster.
           </motion.p>
 
-          <motion.div variants={item} className="mt-11 flex flex-wrap items-center justify-center gap-4">
-            <Magnetic>
-              <Button href="/contact" size="lg">
+          <motion.div
+            variants={item}
+            className="mt-11 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+          >
+            <Magnetic className="w-full sm:w-auto">
+              <Button href="/contact" size="lg" className="w-full sm:w-auto">
                 Start Your Project
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Magnetic>
-            <Magnetic>
-              <Button href="/services" variant="outline" size="lg">
+            <Magnetic className="w-full sm:w-auto">
+              <Button href="/services" variant="outline" size="lg" className="w-full sm:w-auto">
                 Explore Services
               </Button>
             </Magnetic>

@@ -33,7 +33,7 @@ export function Industries() {
                 name={industry.icon}
                 className="h-9 w-9 text-muted transition-colors duration-300 group-hover:text-brand-cyan"
               />
-              <span className="font-display text-base font-medium text-foreground">
+              <span className="max-w-full font-display text-sm font-medium text-foreground [overflow-wrap:anywhere] sm:text-base">
                 {industry.name}
               </span>
             </motion.div>

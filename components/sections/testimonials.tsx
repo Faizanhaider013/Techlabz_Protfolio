@@ -8,14 +8,20 @@ import { testimonials } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const AUTOPLAY_MS = 5500;
+const SWIPE_DISTANCE = 60;
+const SWIPE_VELOCITY = 400;
 
-/** Auto-advancing testimonial slider with manual dot navigation. */
+/** Auto-advancing testimonial slider with swipe + manual dot navigation. */
 export function Testimonials() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
   const next = useCallback(
     () => setIndex((i) => (i + 1) % testimonials.length),
+    []
+  );
+  const prev = useCallback(
+    () => setIndex((i) => (i - 1 + testimonials.length) % testimonials.length),
     []
   );
 
@@ -46,8 +52,21 @@ export function Testimonials() {
           }
         />
 
-        <div className="gradient-border relative min-h-[300px] rounded-3xl p-8 sm:min-h-[260px] md:p-12">
-          <Quote className="absolute right-8 top-8 h-10 w-10 text-brand-cyan/20" aria-hidden />
+        <motion.div
+          className="gradient-border relative min-h-[300px] touch-pan-y rounded-3xl p-6 sm:min-h-[260px] sm:p-8 md:p-12"
+          // Swipe left/right to change testimonials; constraints snap the card
+          // back so only the gesture (not the card) travels.
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragStart={() => setPaused(true)}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -SWIPE_DISTANCE || info.velocity.x < -SWIPE_VELOCITY) next();
+            else if (info.offset.x > SWIPE_DISTANCE || info.velocity.x > SWIPE_VELOCITY) prev();
+            setPaused(false);
+          }}
+        >
+          <Quote className="absolute right-6 top-6 h-10 w-10 text-brand-cyan/20 sm:right-8 sm:top-8" aria-hidden />
           <AnimatePresence mode="wait">
             <motion.figure
               key={index}
@@ -56,25 +75,25 @@ export function Testimonials() {
               exit={{ opacity: 0, y: -24 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <blockquote className="font-display text-2xl font-medium leading-snug text-foreground md:text-[1.75rem]">
+              <blockquote className="font-display text-xl font-medium leading-snug text-foreground sm:text-2xl md:text-[1.75rem]">
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
               <figcaption className="mt-9 flex items-center gap-4">
                 {/* Initials avatar */}
-                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-brand font-display text-base font-bold text-white shadow-glow-cyan">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-brand font-display text-base font-bold text-white shadow-glow-cyan">
                   {current.name.split(" ").map((n) => n[0]).join("")}
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="font-display text-lg font-semibold text-white">{current.name}</p>
                   <p className="text-body text-muted">{current.role}</p>
                 </div>
               </figcaption>
             </motion.figure>
           </AnimatePresence>
-        </div>
+        </motion.div>
 
-        {/* Dots */}
-        <div className="mt-8 flex justify-center gap-2.5" role="tablist" aria-label="Testimonial navigation">
+        {/* Dots — the visible pill sits inside a 48px-tall touch target. */}
+        <div className="mt-4 flex justify-center gap-1" role="tablist" aria-label="Testimonial navigation">
           {testimonials.map((t, i) => (
             <button
               key={t.name}
@@ -82,11 +101,16 @@ export function Testimonials() {
               aria-selected={i === index}
               aria-label={`Show testimonial from ${t.name}`}
               onClick={() => setIndex(i)}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300",
-                i === index ? "w-8 bg-gradient-brand" : "w-2 bg-white/15 hover:bg-white/30"
-              )}
-            />
+              className="group flex h-12 items-center px-1.5"
+            >
+              <span
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300",
+                  i === index ? "w-8 bg-gradient-brand" : "w-2 bg-white/15 group-hover:bg-white/30"
+                )}
+                aria-hidden
+              />
+            </button>
           ))}
         </div>
       </div>

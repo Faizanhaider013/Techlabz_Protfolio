@@ -36,7 +36,7 @@ export function TeamGrid() {
               <a
                 href="#"
                 aria-label={`${member.name} on LinkedIn`}
-                className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/5 hover:text-brand-cyan"
+                className="mt-2 inline-flex h-11 w-11 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/5 hover:text-brand-cyan"
               >
                 <LinkedinIcon className="h-4 w-4" />
               </a>

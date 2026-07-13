@@ -145,7 +145,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<Pa
               </>
             }
           />
-          <RevealStagger className="grid gap-5 md:grid-cols-5">
+          <RevealStagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {processSteps.map((step) => (
               <div
                 key={step.step}

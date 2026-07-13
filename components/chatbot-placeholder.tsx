@@ -17,7 +17,7 @@ export function ChatbotPlaceholder() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="glass mb-4 w-80 rounded-2xl p-5 shadow-card"
+            className="glass mb-4 ml-auto w-80 max-w-[calc(100vw-3rem)] rounded-2xl p-5 shadow-card"
             role="dialog"
             aria-label="AI assistant"
           >
